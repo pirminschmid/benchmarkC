@@ -2,7 +2,7 @@
    Uses rdtsc to get the clock counter. Note potential problems on multicore systems.
 
    References:
-   - Paolini G. http://www.intel.com/content/www/us/en/embedded/training/ia-32-ia-64-benchmark-code-execution-paper.html
+   - Paoloni G. http://www.intel.com/content/www/us/en/embedded/training/ia-32-ia-64-benchmark-code-execution-paper.html
    - Press et al. Numerical recipes in C++ 2nd ed. Cambridge University Press
    - Schoonjans F. https://www.medcalc.org/manual
 
@@ -107,7 +107,7 @@ static int cmp_uint64_t(const void *a, const void *b) {
 }
 
 #define PERC_ATOL 0.001
-// note, the expected frational parts for r_frac will be 0.0, 0.25, 0.5, 0.75
+// note, the expected fractional parts for r_frac will be 0.0, 0.25, 0.5, 0.75
 // thus, no need to test for machine precision if( r_frac <= (DBL_EPSILON * r_p) )
 // PERC_ATOL is currently chosen to allow for some "reserve" if get_percentile is chosen
 // to be used for smaller percentiles, too. The conditional is kept to avoid rounding errors
@@ -208,7 +208,6 @@ bool create_testbench(int capacity) {
 	struct testbench_statistics baseline_stat = calc_statistics(data, count);
 	print_testbench_statistics("baseline", baseline_stat);
 	baseline_stat = print_histogram_and_remove_outliers("baseline", baseline_stat, data, count, true);
-	//baseline = llround(baseline_stat.mean);
 	baseline = baseline_stat.absMin;
 	count = 0;
 	denominator = TESTBENCH_STD_DENOMINATOR;

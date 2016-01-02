@@ -351,7 +351,7 @@ int main() {
 	// tests
 	run_comparison("Test 1. denominator=1.", data1, data1_n, denominator1, &reference1);
 	run_comparison("Test 2. denominator=32, wider SD, fewer values.", data2, data2_n, denominator2, &reference2);
-	run_comparison("Test 3. corner cases n=4.", data3, data3_n, denominator3, &reference3);
+	run_comparison("Test 3. corner case n=4.", data3, data3_n, denominator3, &reference3);
 
 	// cleanup
 	delete_testbench();

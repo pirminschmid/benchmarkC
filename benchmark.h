@@ -25,7 +25,7 @@
    - Press et al. Numerical recipes in C++ 2nd ed. Cambridge University Press
    - Schoonjans F. https://www.medcalc.org/manual
 
-   v0.9 2015-11-25 / 2016-01-02 Pirmin Schmid, MIT License
+   v0.9 2015-11-25 / 2016-01-03 Pirmin Schmid, MIT License
 */
 
 #ifndef _BENCHMARK_H_

@@ -6,7 +6,7 @@
    - Press et al. Numerical recipes in C++ 2nd ed. Cambridge University Press
    - Schoonjans F. https://www.medcalc.org/manual
 
-   v0.9 2015-11-25 / 2016-01-02 Pirmin Schmid, MIT License
+   v0.9 2015-11-25 / 2016-01-03 Pirmin Schmid, MIT License
 */
 
 #include "benchmark.h"
@@ -367,7 +367,7 @@ static void print_testbench_statistics_including_outliers(char *title, struct te
 		// better use larger counts, of course
 		printf("- robust:       median %.1f cycles, IQR [%.1f, %.1f], min %.1f, max %.1f, n=%d [%d outlier(s) removed], denominator=%d, baseline=%d\n",
 			stat.median, stat.q1, stat.q3, stat.min, stat.max, stat.count, removed_outliers, stat.denominator, (int)stat.baseline);
-		printf("- normal dist.: %.1f ± %.1f cycles (mean ± sd), 95%% CI [%.1f, %.1f], min %.1f, max %.1f, n=%d [%d outlier(s) removed], denominator=%d, baseline=%d\n",
+		printf("- normal dist.: %.1f ± %.1f cycles (mean ± sd), 95%% CI for the mean [%.1f, %.1f], min %.1f, max %.1f, n=%d [%d outlier(s) removed], denominator=%d, baseline=%d\n",
 			stat.mean, stat.sd, stat.ci95_a, stat.ci95_b, stat.min, stat.max, stat.count, removed_outliers, stat.denominator, (int)stat.baseline);
 	}
 	else {
@@ -387,7 +387,7 @@ void print_testbench_statistics(char *title, struct testbench_statistics stat) {
 		// better use larger counts, of course
 		printf("- robust:       median %.1f cycles, IQR [%.1f, %.1f], min %.1f, max %.1f, n=%d, denominator=%d, baseline=%d\n",
 			stat.median, stat.q1, stat.q3, stat.min, stat.max, stat.count, stat.denominator, (int)stat.baseline);
-		printf("- normal dist.: %.1f ± %.1f cycles (mean ± sd), 95%% CI [%.1f, %.1f], min %.1f, max %.1f, n=%d, denominator=%d, baseline=%d\n",
+		printf("- normal dist.: %.1f ± %.1f cycles (mean ± sd), 95%% CI for the mean [%.1f, %.1f], min %.1f, max %.1f, n=%d, denominator=%d, baseline=%d\n",
 			stat.mean, stat.sd, stat.ci95_a, stat.ci95_b, stat.min, stat.max, stat.count, stat.denominator, (int)stat.baseline);
 	}
 	else {

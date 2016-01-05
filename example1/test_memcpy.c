@@ -1,9 +1,9 @@
-/* A simple demo program co illustrate the use of this library.
+/* A simple demo program to illustrate the use of this library.
    memcpy() is compared to a loop of copying the data.
 
    Note: While memcpy() is much faster than the loop when compiled with -O0,
    the results are very close when compiled with -O3 -march=native
-   on Haswell (4th generation i7). memcpy() is still faster.
+   on Haswell (4th generation i7).
 
    8 KB of data (data2), after outlier removal
    -O0: loop    6723.2 ± 117.2 cycles (mean ± sd), 95% CI for the mean [6690.8, 6755.5], n=53

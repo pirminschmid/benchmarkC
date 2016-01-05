@@ -1,4 +1,4 @@
 #!/bin/sh
-cp ../../benchmark.c .
-cp ../../benchmark.h .
-cp ../../rdtsc.h .
+cp ../../benchmark/benchmark.c .
+cp ../../benchmark/benchmark.h .
+cp ../../benchmark/rdtsc.h .

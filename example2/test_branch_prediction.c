@@ -1,7 +1,7 @@
 /* A test program to measure branch prediction by the CPU.
    compiled and tested on Intel i7 Haswell 2.5 GHz, OSX 10.11 using Clang 7.0.0
 
-   2015-11-24 / 2015-12-31 Pirmin Schmid
+   2015-11-24 / 2016-01-05 Pirmin Schmid
 */
 
 #include <inttypes.h>
@@ -30,8 +30,8 @@
 // -> some sync associated but allows test whether counting actually works properly
 
 //*
-#define UP_OP ++updown
-#define DWN_OP --updown
+#define UP_OP (++updown)
+#define DWN_OP (--updown)
 #define SHOW_UPDOWN   
 //*/
 
@@ -163,7 +163,7 @@ int next_plusminus(enum options which) {
 			random_count[r]++;
 			return r == 1 ? 1 : -1;
 		default:
-			printf("invalid option in next_plusminus\n");
+			fprintf(stderr, "invalid option in next_plusminus\n");
 			return 0;
 	}
 }
@@ -187,7 +187,7 @@ int next_multi(enum options which) {
 			random_count[r]++;
 			return r;
 		default:
-			printf("invalid option in next_multi\n");
+			fprintf(stderr, "invalid option in next_multi\n");
 			return 0;
 	}
 }
@@ -658,6 +658,7 @@ int global_n_inner = 0;
 int main() {
 	// initialization
 	if( !create_testbench(TESTBENCH_STD_N) ) {
+		fprintf(stderr, "Error: could not open testbench (memory?).\n");
 		exit(1);
 	}
 

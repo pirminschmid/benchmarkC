@@ -32,8 +32,11 @@
 //--- given routines -----------------------------------------------------------
 
 static int *randmatrix(int size) {
-	int *matrix = malloc(size * size * sizeof(int));
-	assert(matrix != NULL);
+	int *matrix = malloc(size * size * sizeof(*matrix));
+	if(!matrix) {
+		fprintf(stderr, "%s: memory allocation error.\n", __func__);
+		exit(1);
+	}
 
 	for (int row = 0; row < size; row++) {
 		for (int col = 0; col < size; col++) {
@@ -55,8 +58,11 @@ static void printmatrix(int size, int *matrix, char name) {
 }
 
 static int *mmul(int size, int *A, int *B) {
-	int *result = malloc(size * size * sizeof(int));
-	assert(result != NULL);
+	int *result = malloc(size * size * sizeof(*result));
+	if(!result) {
+		fprintf(stderr, "%s: memory allocation error.\n", __func__);
+		exit(1);
+	}
 
 	for (int i = 0; i < size; i++) {
 		for (int j = 0; j < size; j++) {
@@ -83,8 +89,11 @@ static int *mmul(int size, int *A, int *B) {
 // no other improvements
 // about 1.5x as fast
 static int *mmul_betterIndexCalculation(int size, int *A, int *B) {
-	int *result = malloc(size * size * sizeof(int));
-	assert(result != NULL);
+	int *result = malloc(size * size * sizeof(*result));
+	if(!result) {
+		fprintf(stderr, "%s: memory allocation error.\n", __func__);
+		exit(1);
+	}
 
 	int a_row = 0;
 	for (int i = 0; i < size; i++) {
@@ -108,9 +117,12 @@ static int *mmul_betterIndexCalculation(int size, int *A, int *B) {
 // note: contents of A and B will not be modified
 // runs about 2x as fast as native
 static int *mmul_transposedB(int size, int *A, int *B) {
-	int *result = malloc(size * size * sizeof(int));
-	int *B_t = malloc(size * size * sizeof(int));
-	assert(result != NULL && B_t != NULL);
+	int *result = malloc(size * size * sizeof(*result));
+	int *B_t = malloc(size * size * sizeof(*B_t));
+	if(!result || !B_t) {
+		fprintf(stderr, "%s: memory allocation error.\n", __func__);
+		exit(1);
+	}
 
 	// transposed B (no swapping to avoid modifications in B)
 	int s_row = 0; 
@@ -139,9 +151,12 @@ static int *mmul_transposedB(int size, int *A, int *B) {
 // C = A * B' as above AND better index calculation
 // runs...
 static int *mmul_transposedB_and_betterIndexCalculation(int size, int *A, int *B) {
-	int *result = malloc(size * size * sizeof(int));
-	int *B_t = malloc(size * size * sizeof(int));
-	assert(result != NULL && B_t != NULL);
+	int *result = malloc(size * size * sizeof(*result));
+	int *B_t = malloc(size * size * sizeof(*B_t));
+	if(!result || !B_t) {
+		fprintf(stderr, "%s: memory allocation error.\n", __func__);
+		exit(1);
+	}
 
 	// transposed B (no swapping to avoid modifications in B)
 	int s_row = 0; 
@@ -188,9 +203,12 @@ static int block_sizes_counter = 0;
 
 static int *mmul_blocks(int size, int *A, int *B) {
 	// memory for B^T and result; note: result must be zeroed!
-	int *B_t = malloc(size * size * sizeof(int));
-	int *result = calloc(1, size * size * sizeof(int));
-	assert(result != NULL && B_t != NULL);
+	int *B_t = malloc(size * size * sizeof(*B_t));
+	int *result = calloc(1, size * size * sizeof(*result));
+	if(!result || !B_t) {
+		fprintf(stderr, "%s: memory allocation error.\n", __func__);
+		exit(1);
+	}
 
 	// get current block size
 	assert(block_sizes_counter < block_sizes_n);
@@ -296,9 +314,12 @@ static int block_sizes_acc4_counter = 0;
 // could be pottentially helpful only on processors that do not allow vetorization at all
 static int *mmul_blocks_multiple_accumulators_naive_1st_try(int size, int *A, int *B) {
 	// memory for B^T and result; note: result must be zeroed!
-	int *B_t = malloc(size * size * sizeof(int));
-	int *result = calloc(1, size * size * sizeof(int));
-	assert(result != NULL && B_t != NULL);
+	int *B_t = malloc(size * size * sizeof(*B_t));
+	int *result = calloc(1, size * size * sizeof(*result));
+	if(!result || !B_t) {
+		fprintf(stderr, "%s: memory allocation error.\n", __func__);
+		exit(1);
+	}
 
 	// get current block size
 	assert(block_sizes_acc4_counter < block_sizes_acc4_n);
@@ -413,9 +434,12 @@ static int *mmul_blocks_multiple_accumulators_naive_1st_try(int size, int *A, in
 // for testing purpose also blocks allowed of min size 16 values
 static int *mmul_blocks_multiple_accumulators(int size, int *A, int *B) {
 	// memory for B^T and result; note: result must be zeroed!
-	int *B_t = malloc(size * size * sizeof(int));
-	int *result = calloc(1, size * size * sizeof(int));
-	assert(result != NULL && B_t != NULL);
+	int *B_t = malloc(size * size * sizeof(*B_t));
+	int *result = calloc(1, size * size * sizeof(*result));
+	if(!result || !B_t) {
+		fprintf(stderr, "%s: memory allocation error.\n", __func__);
+		exit(1);
+	}
 
 	// get current block size
 	assert(block_sizes_acc4_counter < block_sizes_acc4_n);
@@ -590,11 +614,13 @@ bool check_algorithm(int size, int *A, int *B, int *ref, matrix_multiplier mm, c
 	if(!compare_matrices(size, C, ref)) {
 		fprintf(stderr, "FAILED. Wrong result.\n");
 		free(C);
+		C = NULL;
 		return false;
 	}
 
 	fprintf(stderr, "RESULT OK.\n");
 	free(C);
+	C = NULL;
 	return true;
 }
 
@@ -614,6 +640,7 @@ bool time_algorithm(int size, matrix_multiplier mm, char *name) {
 	if(!B) {
 		fprintf(stderr, "Memory error!\n");
 		free(A);
+		A = NULL;
 		return false;
 	}
 
@@ -624,7 +651,9 @@ bool time_algorithm(int size, matrix_multiplier mm, char *name) {
 	add_measurement(start, stop);
 
 	free(B);
+	B = NULL;
 	free(A);
+	A = NULL;
 
 	if(!C) {
 		fprintf(stderr, "Memory error!\n");
@@ -632,6 +661,7 @@ bool time_algorithm(int size, matrix_multiplier mm, char *name) {
 	}
 
 	free(C);
+	C = NULL;
 
 	struct testbench_statistics stat = testbench_get_statistics();
 	//print_testbench_statistics(title, stat); // no need for n only 1
@@ -691,6 +721,7 @@ int main(int argc, char **argv) {
 
 	// initialization
 	if( !create_testbench(TESTBENCH_STD_N) ) {
+		fprintf(stderr, "Error: could not open testbench (memory?).\n");
 		exit(1);
 	}
 	set_denominator(1);
@@ -719,13 +750,17 @@ int main(int argc, char **argv) {
 	for(int i = 0; i < n_tests; i++) {
 		if(!check_algorithm(size, A, B, ref, tests[i], names[i])) {
 			free(B);
+			B = NULL;
 			free(A);
+			A = NULL;
 			exit(1);
 		}
 	}
 	fprintf(stderr, "\n");
 	free(B);
+	B = NULL;
 	free(A);
+	A = NULL;
 
 	// benchmark algorithms to be tested:
 	block_sizes_counter = 0;

@@ -192,7 +192,7 @@ void test_function(testfunction f, char *title, uint64_t *values, int n_values, 
 		RDTSC_STOP(stop);
 		add_measurement(start, stop);
 		if(!cmp_memory(values, dest, n_values)) {
-			printf("Mismatch in copied values in test %s. Probably an optimization error.", title);
+			fprintf(stderr, "Mismatch in copied values in test %s. Probably an optimization error.", title);
 			exit(1);
 		}
 	}
@@ -207,6 +207,7 @@ void test_function(testfunction f, char *title, uint64_t *values, int n_values, 
 int main() {
 	// init
 	if( !create_testbench(N) ) {
+		fprintf(stderr, "Error: could not open testbench (memory?).\n");
 		exit(1);
 	}
 	init_memory(data2, DATA2_N);

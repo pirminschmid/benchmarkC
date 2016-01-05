@@ -6,7 +6,7 @@ A toolbox for (micro)benchmarking of C programs on x86_64.
 
 Performance matters a lot. There are lots of pitfalls when the performance of a code is assessed. This toolbox here is not even trying to compete with available professional profiling tools. Also for microbenchmarking, I recommend/use [google/benchmark][google_benchmark] that was showcased in this excellent [presentation by Chandler Carruth][microbenchmarking] about microbenchmarking at CppCon 2015. Nevertheless, this toolbox here works well for exercises and to learn first-hand about some of the pitfalls associated with benchmarking and learn about some interesting/surprising results while testing programs on current processors (no spoilers here). It uses rdtsc.h from [here][rdtsc.h] based on a paper by G. Paoloni ([link][intel_paper]). It was written for OSX (Clang) and also tested on Fedora (GCC). And, it comes with some convenient statistics goodies that may be useful to you in other applications as well.
 
-Current version v0.92 (2016-01-05). [Feedback][feedback] welcome.
+Current version v0.93 (2016-01-05). [Feedback][feedback] welcome.
 
 
 Usage

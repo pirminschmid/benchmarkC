@@ -310,7 +310,7 @@ static void run_comparison(char *title, uint64_t *values, int values_n, int deno
 	set_denominator(denominator);
 
 	if(!development_load_raw_values(values, values_n)) {
-		printf("Error while loading raw values for test %s.\n", title);
+		fprintf(stderr, "Error while loading raw values for test %s.\n", title);
 		delete_testbench();
 		exit(1);
 	}
@@ -345,6 +345,7 @@ int main() {
 	// init
 	int max_n = (data1_n > data2_n) ? data1_n : data2_n;
 	if( !create_testbench(max_n) ) {
+		fprintf(stderr, "Error: could not open testbench (memory?).\n");
 		exit(1);
 	}
 

@@ -1,4 +1,4 @@
-aseline:
+baseline:
 - robust:       median 31.0 cycles, IQR [31.0, 31.0], min 28.0, max 35.0, n=64, denominator=1, baseline=0
 - normal dist.: 31.0 ± 2.2 cycles (mean ± sd), 95% CI for the mean [30.5, 31.6], min 28.0, max 35.0, n=64, denominator=1, baseline=0
 baseline (8 bins of size 1)

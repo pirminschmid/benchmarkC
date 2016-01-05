@@ -5,7 +5,7 @@
    the results are very close when compiled with -O3 -march=native
    on Haswell (4th generation i7). memcpy() is still faster.
 
-   4 KB of data (data2), after outlier removal
+   8 KB of data (data2), after outlier removal
    -O0: loop    6723.2 ± 117.2 cycles (mean ± sd), 95% CI for the mean [6690.8, 6755.5], n=53
         memcpy   239.7 ± 19.0 cycles (mean ± sd), 95% CI for the mean [234.5, 244.9], n=54
 
@@ -133,7 +133,7 @@ static uint64_t data1[] = {
 
 #define DATA1_N (sizeof(data1) / sizeof(*data1))
 
-// second larger data set
+// second larger data set (8 KB)
 #define DATA2_N 1024
 
 static uint64_t data2[DATA2_N];

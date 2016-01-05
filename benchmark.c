@@ -6,7 +6,7 @@
    - Press et al. Numerical recipes in C++ 2nd ed. Cambridge University Press
    - Schoonjans F. https://www.medcalc.org/manual
 
-   v0.9 2015-11-25 / 2016-01-03 Pirmin Schmid, MIT License
+   v0.91 2015-11-25 / 2016-01-05 Pirmin Schmid, MIT License
 */
 
 #include "benchmark.h"
@@ -17,6 +17,7 @@
 #include <math.h> 
 #include <stdio.h>   
 #include <stdlib.h> 
+#include <string.h>
 
 //--- private data -------------------------------------------------------------
   
@@ -91,6 +92,7 @@ static double get_t_value(int n) {
 	}
 
 	// will not happen
+	assert(false);
 	return 0.0;
 }
 
@@ -165,7 +167,7 @@ bool create_testbench(int capacity) {
 	uint64_t stop = 0;
 	
 	if(capacity < 1) {
-		return false;
+		goto error_wrong_capacity;
 	}
 
 	if(data) {
@@ -174,20 +176,17 @@ bool create_testbench(int capacity) {
 
 	data = malloc(capacity * sizeof(*data));
 	if(!data) {
-		return false;
+		goto error_malloc_data;
 	}
 
 	data_without_outliers = malloc(capacity * sizeof(*data_without_outliers));
 	if(!data_without_outliers) {
-		free(data);
-		return false;
+		goto error_malloc_data_without_outliers;
 	}
 
 	data_working_temp = malloc(capacity * sizeof(*data_working_temp));
 	if(!data_working_temp) {
-		free(data_without_outliers);
-		free(data);
-		return false;
+		goto error_malloc_data_working_temp;
 	}
 
 	cap = capacity;
@@ -212,6 +211,20 @@ bool create_testbench(int capacity) {
 	count = 0;
 	denominator = TESTBENCH_STD_DENOMINATOR;
 	return true;
+
+	// error handling
+//error_next:
+	free(data_working_temp);
+	data_working_temp = NULL;
+error_malloc_data_working_temp:
+	free(data_without_outliers);
+	data_without_outliers = NULL;
+error_malloc_data_without_outliers:
+	free(data);
+	data = NULL;
+error_malloc_data:
+error_wrong_capacity:
+	return false;
 }
 
 void set_denominator(int d) {
@@ -490,9 +503,7 @@ static struct testbench_statistics print_histogram_and_remove_outliers(char *tit
 
 		// alternative version as described
 		// 1) copy data
-		for(int i = 0; i < n_values; i++) {
-			data_working_temp[i] = values[i];
-		}
+		memcpy(data_working_temp, values, n_values * sizeof(*values));
 
 		// 2) walk thru the list and check the # of occurences of a value
 		//    if > cutoff -> copy all of them
@@ -501,15 +512,13 @@ static struct testbench_statistics print_histogram_and_remove_outliers(char *tit
 		//    of these values again and again
 		// Advantage:    no additional memory needed;
 		// Disadvantage: run time O(n^2) as discussed above
-		uint64_t v = 0;
-		int counter = 0;
 		for(int i = 0; i < n_values; i++) {
-			v = data_working_temp[i];
+			uint64_t v = data_working_temp[i];
 			if(v == 0) {
 				continue;
 			}
 
-			counter = 1;
+			int counter = 1;
 			for(int j = i+1; j < n_values; j++) {
 				if(data_working_temp[j] == v) {
 					data_working_temp[j] = 0;
@@ -548,9 +557,7 @@ bool development_load_raw_values(uint64_t *values, int n_values) {
 		return false;
 	}
 
-	for(int i = 0; i < n_values; i++) {
-		data[i] = values[i];
-	}
+	memcpy(data, values, n_values * sizeof(*values));
 	count = n_values;
 	return true;
 }

@@ -3,7 +3,7 @@
 
    data generated and analyzed with MedCalc v15.11.4 (see folder reference_data)
 
-   v1.0 2015-12-31 / 2015-01-02 Pirmin Schmid
+   v1.0 2015-12-31 / 2016-01-02 Pirmin Schmid
 */
 
 #include <inttypes.h>

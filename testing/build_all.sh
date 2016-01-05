@@ -16,11 +16,18 @@ cd ..
 cd ../example1
 ./get_library.sh
 make
-cp main ../testing
+cp test_memcpy ../testing
 make clean
 cd ../testing
 #
 cd ../example2
+./get_library.sh
+make
+cp main ../testing
+make clean
+cd ../testing
+#
+cd ../example3
 ./get_library.sh
 make
 cp mmul ../testing

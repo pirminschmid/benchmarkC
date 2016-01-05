@@ -19,4 +19,9 @@ make clean
 ./rm_library.sh
 cd ../testing
 #
-rm test_rdtsc_main test_stat_functions_main main mmul result.txt
+cd ../example3
+make clean
+./rm_library.sh
+cd ../testing
+#
+rm test_rdtsc_main test_stat_functions_main test_memcpy main mmul result.txt

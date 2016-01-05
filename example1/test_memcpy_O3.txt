@@ -1,0 +1,229 @@
+baseline:
+- robust:       median 28.0 cycles, IQR [28.0, 31.0], min 28.0, max 35.0, n=64, denominator=1, baseline=0
+- normal dist.: 29.4 ± 2.1 cycles (mean ± sd), 95% CI for the mean [28.9, 30.0], min 28.0, max 35.0, n=64, denominator=1, baseline=0
+baseline (8 bins of size 1)
+  28 [ 41]: **************************************************
+  29 [  0]: 
+  30 [  0]: 
+  31 [ 12]: **************.
+  32 [  7]: ********.
+  33 [  0]: 
+  34 [  0]: 
+  35 [  4]: ****.
+
+After outlier removal: 
+baseline:
+- robust:       median 28.0 cycles, IQR [28.0, 31.0], min 28.0, max 35.0, n=64 [0 outlier(s) removed], denominator=1, baseline=0
+- normal dist.: 29.4 ± 2.1 cycles (mean ± sd), 95% CI for the mean [28.9, 30.0], min 28.0, max 35.0, n=64 [0 outlier(s) removed], denominator=1, baseline=0
+(8 bins of size 1)
+  28 [ 41]: **************************************************
+  29 [  0]: 
+  30 [  0]: 
+  31 [ 12]: **************.
+  32 [  7]: ********.
+  33 [  0]: 
+  34 [  0]: 
+  35 [  4]: ****.
+
+
+1) loop:
+- robust:       median 38.0 cycles, IQR [34.0, 38.0], min 31.0, max 4963.0, n=64, denominator=1, baseline=28
+- normal dist.: 114.2 ± 615.8 cycles (mean ± sd), 95% CI for the mean [-39.7, 268.2], min 31.0, max 4963.0, n=64, denominator=1, baseline=28
+1) loop (10 bins of size 512)
+  31 -  542 [ 63]: **************************************************
+ 543 - 1054 [  0]: 
+1055 - 1566 [  0]: 
+1567 - 2078 [  0]: 
+2079 - 2590 [  0]: 
+2591 - 3102 [  0]: 
+3103 - 3614 [  0]: 
+3615 - 4126 [  0]: 
+4127 - 4638 [  0]: 
+4639 - 5150 [  1]: .
+
+After outlier removal: 
+1) loop:
+- robust:       median 38.0 cycles, IQR [34.0, 38.0], min 31.0, max 38.0, n=61 [3 outlier(s) removed], denominator=1, baseline=28
+- normal dist.: 35.9 ± 2.4 cycles (mean ± sd), 95% CI for the mean [35.2, 36.5], min 31.0, max 38.0, n=61 [3 outlier(s) removed], denominator=1, baseline=28
+(8 bins of size 1)
+  31 [  6]: *********
+  32 [  0]: 
+  33 [  0]: 
+  34 [ 19]: *****************************.
+  35 [  4]: ******
+  36 [  0]: 
+  37 [  0]: 
+  38 [ 32]: **************************************************
+
+
+2) memcpy:
+- robust:       median 34.0 cycles, IQR [31.0, 35.0], min 31.0, max 119.0, n=64, denominator=1, baseline=28
+- normal dist.: 35.3 ± 11.1 cycles (mean ± sd), 95% CI for the mean [32.5, 38.1], min 31.0, max 119.0, n=64, denominator=1, baseline=28
+2) memcpy (12 bins of size 8)
+  31 -   38 [ 61]: **************************************************
+  39 -   46 [  2]: *.
+  47 -   54 [  0]: 
+  55 -   62 [  0]: 
+  63 -   70 [  0]: 
+  71 -   78 [  0]: 
+  79 -   86 [  0]: 
+  87 -   94 [  0]: 
+  95 -  102 [  0]: 
+ 103 -  110 [  0]: 
+ 111 -  118 [  0]: 
+ 119 -  126 [  1]: .
+
+After outlier removal: 
+2) memcpy:
+- robust:       median 34.0 cycles, IQR [31.0, 35.0], min 31.0, max 38.0, n=61 [3 outlier(s) removed], denominator=1, baseline=28
+- normal dist.: 33.7 ± 2.7 cycles (mean ± sd), 95% CI for the mean [33.0, 34.4], min 31.0, max 38.0, n=61 [3 outlier(s) removed], denominator=1, baseline=28
+(8 bins of size 1)
+  31 [ 27]: **************************************************
+  32 [  0]: 
+  33 [  0]: 
+  34 [  7]: ************.
+  35 [ 15]: ***************************.
+  36 [  0]: 
+  37 [  0]: 
+  38 [ 12]: **********************
+
+
+3) loop, again:
+- robust:       median 34.5 cycles, IQR [34.0, 38.0], min 31.0, max 107.0, n=64, denominator=1, baseline=28
+- normal dist.: 37.0 ± 11.4 cycles (mean ± sd), 95% CI for the mean [34.2, 39.9], min 31.0, max 107.0, n=64, denominator=1, baseline=28
+3) loop, again (10 bins of size 8)
+  31 -   38 [ 62]: **************************************************
+  39 -   46 [  0]: 
+  47 -   54 [  0]: 
+  55 -   62 [  0]: 
+  63 -   70 [  0]: 
+  71 -   78 [  0]: 
+  79 -   86 [  0]: 
+  87 -   94 [  1]: .
+  95 -  102 [  0]: 
+ 103 -  110 [  1]: .
+
+After outlier removal: 
+3) loop, again:
+- robust:       median 34.0 cycles, IQR [34.0, 38.0], min 31.0, max 38.0, n=62 [2 outlier(s) removed], denominator=1, baseline=28
+- normal dist.: 35.1 ± 2.6 cycles (mean ± sd), 95% CI for the mean [34.4, 35.7], min 31.0, max 38.0, n=62 [2 outlier(s) removed], denominator=1, baseline=28
+(8 bins of size 1)
+  31 [ 12]: *************************
+  32 [  0]: 
+  33 [  0]: 
+  34 [ 20]: *****************************************.
+  35 [  6]: ************.
+  36 [  0]: 
+  37 [  0]: 
+  38 [ 24]: **************************************************
+
+
+4) loop, more data:
+- robust:       median 244.0 cycles, IQR [244.0, 247.0], min 240.0, max 706.0, n=64, denominator=1, baseline=28
+- normal dist.: 252.6 ± 57.8 cycles (mean ± sd), 95% CI for the mean [238.2, 267.0], min 240.0, max 706.0, n=64, denominator=1, baseline=28
+4) loop, more data (15 bins of size 32)
+ 240 -  271 [ 63]: **************************************************
+ 272 -  303 [  0]: 
+ 304 -  335 [  0]: 
+ 336 -  367 [  0]: 
+ 368 -  399 [  0]: 
+ 400 -  431 [  0]: 
+ 432 -  463 [  0]: 
+ 464 -  495 [  0]: 
+ 496 -  527 [  0]: 
+ 528 -  559 [  0]: 
+ 560 -  591 [  0]: 
+ 592 -  623 [  0]: 
+ 624 -  655 [  0]: 
+ 656 -  687 [  0]: 
+ 688 -  719 [  1]: .
+
+After outlier removal: 
+4) loop, more data:
+- robust:       median 244.0 cycles, IQR [244.0, 247.0], min 240.0, max 266.0, n=62 [2 outlier(s) removed], denominator=1, baseline=28
+- normal dist.: 245.1 ± 4.2 cycles (mean ± sd), 95% CI for the mean [244.1, 246.2], min 240.0, max 266.0, n=62 [2 outlier(s) removed], denominator=1, baseline=28
+(14 bins of size 2)
+ 240 -  241 [  4]: ****.
+ 242 -  243 [  0]: 
+ 244 -  245 [ 42]: **************************************************
+ 246 -  247 [ 14]: ****************.
+ 248 -  249 [  0]: 
+ 250 -  251 [  0]: 
+ 252 -  253 [  0]: 
+ 254 -  255 [  0]: 
+ 256 -  257 [  0]: 
+ 258 -  259 [  0]: 
+ 260 -  261 [  0]: 
+ 262 -  263 [  0]: 
+ 264 -  265 [  0]: 
+ 266 -  267 [  2]: **
+
+
+5) memcpy, more data:
+- robust:       median 244.0 cycles, IQR [241.0, 244.0], min 237.0, max 484.0, n=64, denominator=1, baseline=28
+- normal dist.: 246.9 ± 30.4 cycles (mean ± sd), 95% CI for the mean [239.3, 254.5], min 237.0, max 484.0, n=64, denominator=1, baseline=28
+5) memcpy, more data (16 bins of size 16)
+ 237 -  252 [ 59]: **************************************************
+ 253 -  268 [  4]: ***
+ 269 -  284 [  0]: 
+ 285 -  300 [  0]: 
+ 301 -  316 [  0]: 
+ 317 -  332 [  0]: 
+ 333 -  348 [  0]: 
+ 349 -  364 [  0]: 
+ 365 -  380 [  0]: 
+ 381 -  396 [  0]: 
+ 397 -  412 [  0]: 
+ 413 -  428 [  0]: 
+ 429 -  444 [  0]: 
+ 445 -  460 [  0]: 
+ 461 -  476 [  0]: 
+ 477 -  492 [  1]: .
+
+After outlier removal: 
+5) memcpy, more data:
+- robust:       median 244.0 cycles, IQR [241.0, 244.0], min 237.0, max 256.0, n=60 [4 outlier(s) removed], denominator=1, baseline=28
+- normal dist.: 242.6 ± 3.3 cycles (mean ± sd), 95% CI for the mean [241.7, 243.4], min 237.0, max 256.0, n=60 [4 outlier(s) removed], denominator=1, baseline=28
+(10 bins of size 2)
+ 237 -  238 [  5]: ********.
+ 239 -  240 [  4]: ******.
+ 241 -  242 [ 20]: **********************************
+ 243 -  244 [ 29]: **************************************************
+ 245 -  246 [  0]: 
+ 247 -  248 [  0]: 
+ 249 -  250 [  0]: 
+ 251 -  252 [  0]: 
+ 253 -  254 [  0]: 
+ 255 -  256 [  2]: ***
+
+
+6) loop, more data, again:
+- robust:       median 244.0 cycles, IQR [244.0, 244.0], min 240.0, max 422.0, n=64, denominator=1, baseline=28
+- normal dist.: 246.7 ± 22.5 cycles (mean ± sd), 95% CI for the mean [241.1, 252.3], min 240.0, max 422.0, n=64, denominator=1, baseline=28
+6) loop, more data, again (12 bins of size 16)
+ 240 -  255 [ 62]: **************************************************
+ 256 -  271 [  1]: .
+ 272 -  287 [  0]: 
+ 288 -  303 [  0]: 
+ 304 -  319 [  0]: 
+ 320 -  335 [  0]: 
+ 336 -  351 [  0]: 
+ 352 -  367 [  0]: 
+ 368 -  383 [  0]: 
+ 384 -  399 [  0]: 
+ 400 -  415 [  0]: 
+ 416 -  431 [  1]: .
+
+After outlier removal: 
+6) loop, more data, again:
+- robust:       median 244.0 cycles, IQR [244.0, 244.0], min 240.0, max 247.0, n=61 [3 outlier(s) removed], denominator=1, baseline=28
+- normal dist.: 243.5 ± 1.7 cycles (mean ± sd), 95% CI for the mean [243.1, 243.9], min 240.0, max 247.0, n=61 [3 outlier(s) removed], denominator=1, baseline=28
+(8 bins of size 1)
+ 240 [ 10]: **********
+ 241 [  0]: 
+ 242 [  0]: 
+ 243 [  0]: 
+ 244 [ 48]: **************************************************
+ 245 [  0]: 
+ 246 [  0]: 
+ 247 [  3]: ***

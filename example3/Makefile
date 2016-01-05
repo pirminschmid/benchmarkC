@@ -1,24 +1,24 @@
 CFLAGS  = -Wall -Wextra -std=c99 -O3 -march=native
 
-TARGET = test_memcpy
-SRCS   = test_memcpy.c benchmark.c
+TARGET = mmul
+SRCS   = mmul.c benchmark.c
 OBJS   = $(SRCS:.c=.o)
 ASM    = $(SRCS:.c=.S)  
 DEPS   = $(SRCS:%.c=.%.d)
 
 .PHONY: clean all
-all: $(TARGET) $(ASM)
+all: $(TARGET) $(ASM) Makefile
 
 run: $(TARGET)
 	./$(TARGET)
 
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) Makefile
 	$(CC) $(CFLAGS) $(OBJS) -o $(TARGET) -lm
 
-$(ASM): $(SRCS)
+$(ASM): $(SRCS) Makefile
 	$(CC) -MMD -MP -MF .$*.d $(CFLAGS) -c $*.c -S -o $*.S
 
-%.o: %.c
+%.o: %.c Makefile
 	$(CC) -MMD -MP -MF .$*.d $(CFLAGS) -c $*.c -o $*.o
 
 clean:

@@ -6,7 +6,7 @@
    - Press et al. Numerical recipes in C++ 2nd ed. Cambridge University Press
    - Schoonjans F. https://www.medcalc.org/manual
 
-   v0.93 2015-11-25 / 2016-01-05 Pirmin Schmid, MIT License
+   v1.0 2015-11-25 / 2016-01-07 Pirmin Schmid, MIT License
 */
 
 #include "benchmark.h"

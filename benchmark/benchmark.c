@@ -23,30 +23,31 @@
   
 // some internal variables
 
-static uint64_t baseline = 0;
+static uint64_t baseline_ = 0;
 
 // raw data stored from measurement
-static uint64_t *data = NULL;
+static uint64_t *data_ = NULL;
 
 // temporary internal data for outlier removal
 // allocated at the beginning to avoid lots of mallocs() later
-static uint64_t *data_without_outliers = NULL;
+static uint64_t *data_without_outliers_ = NULL;
 
 // additional temporary internal data for outlier removal
 // allocated at the beginning to avoid lots of mallocs() later
-static uint64_t *data_working_temp = NULL;
+static uint64_t *data_working_temp_ = NULL;
 
-static int cap = 0;
-static int count = 0;
-static int denominator = 1;
+static int cap_ = 0;
+static int count_ = 0;
+static int denominator_ = 1;
 
-static enum testbench_outlier_detection_mode outlier_detection_mode = TESTBENCH_OUTLIER_DETECTION_OFF;
+static enum testbench_outlier_detection_mode outlier_detection_mode_ = TESTBENCH_OUTLIER_DETECTION_OFF;
 
 // default
 static struct testbench_time_unit cycles = {
     .name = "cycles",
     .cycles_per_unit = 1
 };
+
 
 // values of t-distribution (two-tailed) for 100*(1-alpha)% = 95% (alpha level 0.05)
 // from https://www.medcalc.org/manual/t-distribution.php
@@ -131,10 +132,8 @@ static int cmp_uint64_t(const void *a, const void *b)
 //     Schoonjans F, De Bacquer D, Schmid P. Estimation of population percentiles. Epidemiology 2011;22:750-751.
 // percentile must be in range (0,1) -- note: not (0,100) here.
 // modified to include the denominator, too.
-static double get_percentile(uint64_t *sorted_values, int n_values, double percentile, int denom)
+static double get_percentile(uint64_t *sorted_values, int n_values, double percentile, int denominator)
 {
-    assert(sorted_values);
-
     double n = (double)n_values;
     assert(1.0/n <= percentile && percentile <= (n - 1.0)/n);
     double r_p = 0.5 + percentile * n;
@@ -162,7 +161,7 @@ static double get_percentile(uint64_t *sorted_values, int n_values, double perce
         result += r_frac * (double)sorted_values[r_ind2];        // the closer to 1.0 the more weight
     }
 
-    return result / ((double)denom);
+    return result / ((double)denominator);
 }
 
 static struct testbench_statistics calc_statistics(uint64_t *values, int n_values);
@@ -186,58 +185,58 @@ bool create_testbench(int capacity)
         goto error_wrong_capacity;
     }
 
-    if (data) {
+    if (data_) {
         delete_testbench();
     }
 
-    data = malloc(capacity * sizeof(*data));
-    if  (!data) {
+    data_ = malloc(capacity * sizeof(*data_));
+    if (!data_) {
         goto error_malloc_data;
     }
 
-    data_without_outliers = malloc(capacity * sizeof(*data_without_outliers));
-    if (!data_without_outliers) {
+    data_without_outliers_ = malloc(capacity * sizeof(*data_without_outliers_));
+    if (!data_without_outliers_) {
         goto error_malloc_data_without_outliers;
     }
 
-    data_working_temp = malloc(capacity * sizeof(*data_working_temp));
-    if (!data_working_temp) {
+    data_working_temp_ = malloc(capacity * sizeof(*data_working_temp_));
+    if (!data_working_temp_) {
         goto error_malloc_data_working_temp;
     }
 
-    cap = capacity;
-    denominator = 1;
+    cap_ = capacity;
+    denominator_ = 1;
 
     // establish baseline
     // have 2 dry runs (warming up) and then one measurement
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < cap; j++) {
+        for (int j = 0; j < cap_; j++) {
             RDTSC_START(start);
             // nothing
             RDTSC_STOP(stop);
-            data[j] = stop - start;
+            data_[j] = stop - start;
         }
     }
 
-    count = cap;
-    struct testbench_statistics baseline_stat = calc_statistics(data, count);
+    count_ = cap_;
+    struct testbench_statistics baseline_stat = calc_statistics(data_, count_);
     print_testbench_statistics("baseline", &baseline_stat, NULL);
-    baseline_stat = print_histogram_and_remove_outliers("baseline", &baseline_stat, NULL, data, count, true);
-    baseline = baseline_stat.absMin;
-    count = 0;
-    denominator = TESTBENCH_STD_DENOMINATOR;
+    baseline_stat = print_histogram_and_remove_outliers("baseline", &baseline_stat, NULL, data_, count_, true);
+    baseline_ = baseline_stat.absMin;
+    count_ = 0;
+    denominator_ = TESTBENCH_STD_DENOMINATOR;
     return true;
 
     // error handling
 //error_next:
-    free(data_working_temp);
-    data_working_temp = NULL;
+    free(data_working_temp_);
+    data_working_temp_ = NULL;
 error_malloc_data_working_temp:
-    free(data_without_outliers);
-    data_without_outliers = NULL;
+    free(data_without_outliers_);
+    data_without_outliers_ = NULL;
 error_malloc_data_without_outliers:
-    free(data);
-    data = NULL;
+    free(data_);
+    data_ = NULL;
 error_malloc_data:
 error_wrong_capacity:
     return false;
@@ -249,46 +248,46 @@ void set_denominator(int d)
         return;
     }
 
-    denominator = d;
+    denominator_ = d;
 }
 
 void set_outlier_detection_mode(enum testbench_outlier_detection_mode mode)
 {
-    outlier_detection_mode = mode;
+    outlier_detection_mode_ = mode;
 }
 
 void reset_testbench(void)
 {
-    count = 0;
+    count_ = 0;
 }
 
 void delete_testbench(void)
 {
-    if (data_working_temp) {
-        free(data_working_temp);
-        data_working_temp = NULL;
+    if (data_working_temp_) {
+        free(data_working_temp_);
+        data_working_temp_ = NULL;
     }
 
-    if (data_without_outliers) {
-        free(data_without_outliers);
-        data_without_outliers = NULL;
+    if (data_without_outliers_) {
+        free(data_without_outliers_);
+        data_without_outliers_ = NULL;
     }
 
-    if (data) {
-        free(data);
-        data = NULL;
-        cap = 0;
-        count = 0;
-        baseline = 0;
-        denominator = TESTBENCH_STD_DENOMINATOR;
+    if (data_) {
+        free(data_);
+        data_ = NULL;
+        cap_ = 0;
+        count_ = 0;
+        baseline_ = 0;
+        denominator_ = TESTBENCH_STD_DENOMINATOR;
     }
 }
 
 void add_measurement(uint64_t start, uint64_t stop)
 {
     // no array index check here
-    uint64_t delta = stop - start - baseline;
-    data[count++] = ((int64_t)delta) < 0 ? 0 : delta;
+    uint64_t delta = stop - start - baseline_;
+    data_[count_++] = ((int64_t)delta) < 0 ? 0 : delta;
 }
 
 
@@ -301,8 +300,8 @@ static struct testbench_statistics calc_statistics(uint64_t *values, int n_value
     // note: min/max deliberately not stored while adding measurements to avoid any
     // unnecessary cache interruption of the program to be measured
     struct testbench_statistics result = {0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-    result.denominator = denominator;
-    result.baseline = baseline;
+    result.denominator = denominator_;
+    result.baseline = baseline_;
     if (n_values == 0) {
         return result;
     }
@@ -325,24 +324,24 @@ static struct testbench_statistics calc_statistics(uint64_t *values, int n_value
         }
     }
 
-    double mean = (double)sum / ((double)denominator * (double)n_values);
+    double mean = (double)sum / ((double)denominator_ * (double)n_values);
     result.mean = mean;
     result.absMin = min;
-    result.min = (double)min / (double)denominator;
+    result.min = (double)min / (double)denominator_;
     result.absMax = max;
-    result.max = (double)max / (double)denominator;
+    result.max = (double)max / (double)denominator_;
 
     // robust
     if (n_values > 1) {
         qsort(values, n_values, sizeof(*values), cmp_uint64_t);
-        result.median = get_percentile(values, n_values, 0.5, denominator);
+        result.median = get_percentile(values, n_values, 0.5, denominator_);
 
         if (n_values > 3) {
             // just the bare minimum to work
             // of course these quartiles will have large 95% confidence intervals by themselves
             // thus: choose larger n_values for meaningful results, of course
-            result.q1 = get_percentile(values, n_values, 0.25, denominator);
-            result.q3 = get_percentile(values, n_values, 0.75, denominator);
+            result.q1 = get_percentile(values, n_values, 0.25, denominator_);
+            result.q3 = get_percentile(values, n_values, 0.75, denominator_);
         }
         else {
             result.q1 = result.min;
@@ -362,7 +361,7 @@ static struct testbench_statistics calc_statistics(uint64_t *values, int n_value
         double delta = 0.0;
         double s2 = 0.0;
         for (int i = 0; i < n_values; i++) {
-            delta = (double)values[i] / (double)denominator - mean;
+            delta = (double)values[i] / (double)denominator_ - mean;
             s2 += delta * delta;
         }
 
@@ -383,15 +382,15 @@ struct testbench_statistics testbench_get_statistics(void)
 {
     // note: min/max deliberately not stored while adding measurements to avoid any
     // unnecessary cache interruption of the program to be measured
-    return calc_statistics(data, count);
+    return calc_statistics(data_, count_);
 }
 
 
 //--- print_testbench_values() -------------------------------------------------
 void print_testbench_values(void)
 {
-    for (int i=0; i < count; i++) {
-        printf("%" PRIu64 "\n", data[i]);
+    for (int i=0; i < count_; i++) {
+        printf("%" PRIu64 "\n", data_[i]);
     }
 }
 
@@ -504,8 +503,13 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
         return *stat;
     }
 
-    uint64_t min = stat->absMin / denominator;
-    uint64_t max = stat->absMax / denominator;
+    uint64_t d = denominator_;
+    if (unit) {
+        d *= unit->cycles_per_unit;
+    }
+
+    uint64_t min = stat->absMin / d;
+    uint64_t max = stat->absMax / d;
 
     int delta = (int)(max - min);
     int bins = delta + 1;
@@ -529,7 +533,7 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
     }
 
     for (int i = 0; i < n_values; i++) {
-        histogram[ ((int)(values[i] / denominator - min)) / size ]++;
+        histogram[ ((int)(values[i] / d - min)) / size ]++;
     }
 
     int hist_max = 0;
@@ -559,7 +563,7 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
         printf("\n");
     }
 
-    if (outlier_detection_mode == TESTBENCH_OUTLIER_DETECTION_OFF) {
+    if (outlier_detection_mode_ == TESTBENCH_OUTLIER_DETECTION_OFF) {
         return *stat;
     }
 
@@ -570,14 +574,14 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
     // start outlier detection
     int count_without_outliers = 0;
 
-    if (outlier_detection_mode == TESTBENCH_OUTLIER_DETECTION_SD) {
+    if (outlier_detection_mode_ == TESTBENCH_OUTLIER_DETECTION_SD) {
         if (n_values < TESTBENCH_OUTLIER_DETECTION_SD_MIN_N) {
             return *stat;
         }
 
-        double d = TESTBENCH_OUTLIER_DETECTION_SD_MIN_SD * stat->sd;
-        double low = stat->mean - d;
-        double high = stat->mean + d;
+        double diff = TESTBENCH_OUTLIER_DETECTION_SD_MIN_SD * stat->sd;
+        double low = stat->mean - diff;
+        double high = stat->mean + diff;
         for (int i = 0; i < n_values; i++) {
             uint64_t vi = values[i];
             double vd = (double)vi;
@@ -587,10 +591,10 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
             if (vd > high) {
                 continue;
             }
-            data_without_outliers[count_without_outliers++] = vi;
+            data_without_outliers_[count_without_outliers++] = vi;
         }
     }
-    else if (outlier_detection_mode == TESTBENCH_OUTLIER_DETECTION_HISTOGRAM) {
+    else if (outlier_detection_mode_ == TESTBENCH_OUTLIER_DETECTION_HISTOGRAM) {
         if (n_values < TESTBENCH_OUTLIER_DETECTION_HISTOGRAM_MIN_N) {
             return *stat;
         }
@@ -613,7 +617,7 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
 
         // alternative histogram version as described
         // 1) copy data
-        memcpy(data_working_temp, values, n_values * sizeof(*values));
+        memcpy(data_working_temp_, values, n_values * sizeof(*values));
 
         // 2) walk thru the list and check the # of occurences of a value
         //    if > cutoff -> copy all of them
@@ -623,15 +627,15 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
         // Advantage:    no additional memory needed;
         // Disadvantage: run time O(n^2) as discussed above
         for (int i = 0; i < n_values; i++) {
-            uint64_t v = data_working_temp[i];
+            uint64_t v = data_working_temp_[i];
             if (v == 0) {
                 continue;
             }
 
             int counter = 1;
             for (int j = i+1; j < n_values; j++) {
-                if (data_working_temp[j] == v) {
-                    data_working_temp[j] = 0;
+                if (data_working_temp_[j] == v) {
+                    data_working_temp_[j] = 0;
                     counter++;
                 }
             }
@@ -639,20 +643,18 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
             // 3) add values to the correct list, if needed
             if (counter > cutoff) {
                 for (int j = 0; j < counter; j++) {
-                    data_without_outliers[count_without_outliers++] = v;
+                    data_without_outliers_[count_without_outliers++] = v;
                 }                   
             }
         }
-
-
     }
     else {
         assert(false);
     }
 
-    struct testbench_statistics no_outliers = calc_statistics(data_without_outliers, count_without_outliers);
+    struct testbench_statistics no_outliers = calc_statistics(data_without_outliers_, count_without_outliers);
     printf("\nAfter outlier removal (method ");
-    switch (outlier_detection_mode) {
+    switch (outlier_detection_mode_) {
         case TESTBENCH_OUTLIER_DETECTION_SD: {
             printf("standard deviation, cutoff at %d SD):", TESTBENCH_OUTLIER_DETECTION_SD_MIN_SD);
             break;
@@ -667,7 +669,7 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
             assert(false);
     }
     print_testbench_statistics_including_outliers(title, &no_outliers, unit, stat->count - count_without_outliers);
-    print_histogram_and_remove_outliers(NULL, &no_outliers, unit, data_without_outliers, count_without_outliers, false);
+    print_histogram_and_remove_outliers(NULL, &no_outliers, unit, data_without_outliers_, count_without_outliers, false);
     printf("\n");
     return no_outliers;
 }
@@ -675,19 +677,19 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
 struct testbench_statistics print_histogram(const char *title, const struct testbench_statistics *stat,
                                             const struct testbench_time_unit *unit)
 {
-    return print_histogram_and_remove_outliers(title, stat, unit, data, count, true); 
+    return print_histogram_and_remove_outliers(title, stat, unit, data_, count_, true); 
 }
 
 //--- development helpers ------------------------------------------------------
 
 bool development_load_raw_values(const uint64_t *values, int n_values)
 {
-    if (n_values > cap) {
+    if (n_values > cap_) {
         return false;
     }
 
-    memcpy(data, values, n_values * sizeof(*values));
-    count = n_values;
+    memcpy(data_, values, n_values * sizeof(*values));
+    count_ = n_values;
     return true;
 }
 

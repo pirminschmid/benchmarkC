@@ -25,6 +25,15 @@
    - Press et al. Numerical recipes in C++ 2nd ed. Cambridge University Press
    - Schoonjans F. https://www.medcalc.org/manual
 
+   Note: see improved StatisticsHelper library in C++14 that offers various additional features
+   - generic use; not associated to rdtsc
+   - works with doubles in a numerically robust implementation
+   - added: harmonic and geometric mean and 95% CI
+   - more detailed t-distribution table
+
+   Link: https://github.com/pirminschmid/CppToolbox
+
+
    v1.0 2015-11-25 / 2016-01-07 Pirmin Schmid, MIT License
 */
 

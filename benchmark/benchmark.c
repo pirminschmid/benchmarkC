@@ -262,7 +262,8 @@ void reset_testbench(void)
     count = 0;
 }
 
-void delete_testbench(void) {
+void delete_testbench(void)
+{
     if (data_working_temp) {
         free(data_working_temp);
         data_working_temp = NULL;
@@ -283,7 +284,8 @@ void delete_testbench(void) {
     }
 }
 
-void add_measurement(uint64_t start, uint64_t stop) {
+void add_measurement(uint64_t start, uint64_t stop)
+{
     // no array index check here
     uint64_t delta = stop - start - baseline;
     data[count++] = ((int64_t)delta) < 0 ? 0 : delta;
@@ -294,7 +296,8 @@ void add_measurement(uint64_t start, uint64_t stop) {
 
 // calculates the statistics for an array values[] of size n_values
 // this internal function is used by testbench_get_statistics() and print_histogram()
-static struct testbench_statistics calc_statistics(uint64_t *values, int n_values) {
+static struct testbench_statistics calc_statistics(uint64_t *values, int n_values)
+{
     // note: min/max deliberately not stored while adding measurements to avoid any
     // unnecessary cache interruption of the program to be measured
     struct testbench_statistics result = {0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -376,7 +379,8 @@ static struct testbench_statistics calc_statistics(uint64_t *values, int n_value
     return result;
 }
 
-struct testbench_statistics testbench_get_statistics(void) {
+struct testbench_statistics testbench_get_statistics(void)
+{
     // note: min/max deliberately not stored while adding measurements to avoid any
     // unnecessary cache interruption of the program to be measured
     return calc_statistics(data, count);
@@ -384,7 +388,8 @@ struct testbench_statistics testbench_get_statistics(void) {
 
 
 //--- print_testbench_values() -------------------------------------------------
-void print_testbench_values(void) {
+void print_testbench_values(void)
+{
     for (int i=0; i < count; i++) {
         printf("%" PRIu64 "\n", data[i]);
     }

@@ -1,7 +1,7 @@
 /* A test program to measure branch prediction by the CPU.
    compiled and tested on Intel i7 Haswell 2.5 GHz, OSX 10.11 using Clang 7.0.0
 
-   2015-11-24 / 2016-01-05 Pirmin Schmid
+   v1.0.1 2015-11-24 / 2017-11-18 Pirmin Schmid
 */
 
 #include <inttypes.h>
@@ -272,11 +272,12 @@ void run_cond_test_A(char *title, cond_function f, enum options which) {
 #endif
 
 	struct testbench_statistics stat = testbench_get_statistics();
-	print_testbench_statistics(title, stat);
+	print_testbench_statistics(title, &stat, NULL);
 	if(which == RANDOM) {
 		printf("+1 / -1 ratio = %f\n", (double)random_count[0] / (double)random_count[1]);
 	}
-	print_histogram(title, stat);
+	set_outlier_detection_mode(TESTBENCH_OUTLIER_DETECTION_HISTOGRAM);
+	print_histogram(title, &stat, NULL);
 }
 
 // inner loop
@@ -309,11 +310,12 @@ void run_cond_test_B(char *title, cond_function f, enum options which) {
 #endif
 
 	struct testbench_statistics stat = testbench_get_statistics();
-	print_testbench_statistics(title, stat);
+	print_testbench_statistics(title, &stat, NULL);
 	if(which == RANDOM) {
 		printf("+1 / -1 ratio = %f\n", (double)random_count[0] / (double)random_count[1]);
 	}
-	print_histogram(title, stat);
+	set_outlier_detection_mode(TESTBENCH_OUTLIER_DETECTION_HISTOGRAM);
+	print_histogram(title, &stat, NULL);
 }
 
 void run_cond_test_local(char *title, enum options which, int n, int n_inner) {
@@ -371,11 +373,12 @@ void run_cond_test_local(char *title, enum options which, int n, int n_inner) {
 #endif
 
 	struct testbench_statistics stat = testbench_get_statistics();
-	print_testbench_statistics(title, stat);
+	print_testbench_statistics(title, &stat, NULL);
 	if(which == RANDOM) {
 		printf("+1 / -1 ratio = %f\n", (double)random_count[0] / (double)random_count[1]);
 	}
-	print_histogram(title, stat);
+	set_outlier_detection_mode(TESTBENCH_OUTLIER_DETECTION_HISTOGRAM);
+	print_histogram(title, &stat, NULL);
 }
 
 void run_cond_test_global(char *title, enum options which, int n, int n_inner) {
@@ -429,11 +432,12 @@ void run_cond_test_global(char *title, enum options which, int n, int n_inner) {
 #endif
 
 	struct testbench_statistics stat = testbench_get_statistics();
-	print_testbench_statistics(title, stat);
+	print_testbench_statistics(title, &stat, NULL);
 	if(which == RANDOM) {
 		printf("+1 / -1 ratio = %f\n", (double)random_count[0] / (double)random_count[1]);
 	}
-	print_histogram(title, stat);
+	set_outlier_detection_mode(TESTBENCH_OUTLIER_DETECTION_HISTOGRAM);
+	print_histogram(title, &stat, NULL);
 }
 
 void run_cond_test_volatile(char *title, enum options which, int n, int n_inner) {
@@ -487,11 +491,12 @@ void run_cond_test_volatile(char *title, enum options which, int n, int n_inner)
 #endif
 
 	struct testbench_statistics stat = testbench_get_statistics();
-	print_testbench_statistics(title, stat);
+	print_testbench_statistics(title, &stat, NULL);
 	if(which == RANDOM) {
 		printf("+1 / -1 ratio = %f\n", (double)random_count[0] / (double)random_count[1]);
 	}
-	print_histogram(title, stat);
+	set_outlier_detection_mode(TESTBENCH_OUTLIER_DETECTION_HISTOGRAM);
+	print_histogram(title, &stat, NULL);
 }
 
 // tests 1-3 use a function pointer to pass the actual function to be tested

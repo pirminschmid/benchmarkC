@@ -13,7 +13,7 @@
         memcpy   242.6 ± 3.3 cycles (mean ± sd), 95% CI for the mean [241.7, 243.4], n=60
 
 
-   v1.0 2016-01-05 / 2016-01-05 Pirmin Schmid
+   v1.0.1 2016-01-05 / 2017-11-18 Pirmin Schmid
 */
 
 #include <stdbool.h>
@@ -148,22 +148,22 @@ static uint64_t dest_memcpy[DATA2_N];
 //--- reset --------------------------------------------------------------------
 
 void init_memory(uint64_t *dest, int n_values) {
-	for(int i = 0; i < n_values; i++) {
-		dest[i] = i * 3;
-	}
+    for(int i = 0; i < n_values; i++) {
+        dest[i] = i * 3;
+    }
 }
 
 void reset_memory(uint64_t *dest, int n_values) {
-	memset(dest, 0, n_values * sizeof(*dest));
+    memset(dest, 0, n_values * sizeof(*dest));
 }
 
 bool cmp_memory(uint64_t *values1, uint64_t *values2, int n_values) {
-	for(int i = 0; i < n_values; i++) {
-		if(values1[i] != values2[i]) {
-			return false;
-		}
-	}
-	return true;	
+    for(int i = 0; i < n_values; i++) {
+        if(values1[i] != values2[i]) {
+            return false;
+        }
+    }
+    return true;    
 }
 
 //--- test functions -----------------------------------------------------------
@@ -171,66 +171,76 @@ bool cmp_memory(uint64_t *values1, uint64_t *values2, int n_values) {
 typedef void (*testfunction)(uint64_t *, int);
 
 void copy_with_loop(uint64_t *values, int n_values) {
-	for(int i = 0; i < n_values; i++) {
-		dest_loop[i] = values[i];
-	}
+    for(int i = 0; i < n_values; i++) {
+        dest_loop[i] = values[i];
+    }
 }
 
 void copy_with_memcpy(uint64_t *values, int n_values) {
-	memcpy(dest_memcpy, values, n_values * sizeof(*values));
+    memcpy(dest_memcpy, values, n_values * sizeof(*values));
 }
 
 void test_function(testfunction f, char *title, uint64_t *values, int n_values, uint64_t *dest) {
-	uint64_t stop = 0;
-	uint64_t start = 0;
-	reset_testbench();
-	for(int i = 0; i < N; i++) {
-		reset_memory(dest, n_values);
+    uint64_t stop = 0;
+    uint64_t start = 0;
+    reset_testbench();
+    set_outlier_detection_mode(TESTBENCH_OUTLIER_DETECTION_OFF);
+    // mode is only reset here because we are showing multiple variants below
+    for(int i = 0; i < N; i++) {
+        reset_memory(dest, n_values);
 
-		RDTSC_START(start);
-		f(values, n_values);
-		RDTSC_STOP(stop);
-		add_measurement(start, stop);
-		if(!cmp_memory(values, dest, n_values)) {
-			fprintf(stderr, "Mismatch in copied values in test %s. Probably an optimization error.", title);
-			exit(1);
-		}
-	}
+        RDTSC_START(start);
+        f(values, n_values);
+        RDTSC_STOP(stop);
+        add_measurement(start, stop);
+        if(!cmp_memory(values, dest, n_values)) {
+            fprintf(stderr, "Mismatch in copied values in test %s. Probably an optimization error.", title);
+            exit(1);
+        }
+    }
 
-	struct testbench_statistics stat = testbench_get_statistics();
-	print_testbench_statistics(title, stat);
-	print_histogram(title, stat);	
+    struct testbench_statistics stat = testbench_get_statistics();
+    print_testbench_statistics(title, &stat, NULL);
+    print_histogram(title, &stat, NULL);
+
+    print_testbench_statistics(title, &stat, NULL);
+    set_outlier_detection_mode(TESTBENCH_OUTLIER_DETECTION_HISTOGRAM);
+    print_histogram(title, &stat, NULL);
+
+    print_testbench_statistics(title, &stat, NULL);
+    set_outlier_detection_mode(TESTBENCH_OUTLIER_DETECTION_SD);
+    print_histogram(title, &stat, NULL);
 }
 
 //--- main ---------------------------------------------------------------------
 
 int main() {
-	// init
-	if( !create_testbench(N) ) {
-		fprintf(stderr, "Error: could not open testbench (memory?).\n");
-		exit(1);
-	}
-	init_memory(data2, DATA2_N);
+    // init
+    if( !create_testbench(N) ) {
+        fprintf(stderr, "Error: could not open testbench (memory?).\n");
+        exit(1);
+    }
+    init_memory(data2, DATA2_N);
 
-	// 1) loop
-	test_function(copy_with_loop, "1) loop", data1, DATA1_N, dest_loop);
+    // 1) loop
+    test_function(copy_with_loop, "1) loop", data1, DATA1_N, dest_loop);
 
-	// 2) memcpy
-	test_function(copy_with_memcpy, "2) memcpy", data1, DATA1_N, dest_memcpy);
+    // 2) memcpy
+    test_function(copy_with_memcpy, "2) memcpy", data1, DATA1_N, dest_memcpy);
 
-	// 3) loop, again (see/exclude potential caching benefit for memcpy)
-	test_function(copy_with_loop, "3) loop, again", data1, DATA1_N, dest_loop);
+    // 3) loop, again (see/exclude potential caching benefit for memcpy)
+    test_function(copy_with_loop, "3) loop, again", data1, DATA1_N, dest_loop);
 
-	// 4) loop, more data
-	test_function(copy_with_loop, "4) loop, more data", data2, DATA2_N, dest_loop);
+    // 4) loop, more data
+    test_function(copy_with_loop, "4) loop, more data", data2, DATA2_N, dest_loop);
 
-	// 5) loop, more data
-	test_function(copy_with_memcpy, "5) memcpy, more data", data2, DATA2_N, dest_memcpy);
+    // 5) loop, more data
+    test_function(copy_with_memcpy, "5) memcpy, more data", data2, DATA2_N, dest_memcpy);
 
-	// 6) loop, more data, again (see/exclude potential caching benefit for memcpy)
-	test_function(copy_with_loop, "6) loop, more data, again", data2, DATA2_N, dest_loop);
+    // 6) loop, more data, again (see/exclude potential caching benefit for memcpy)
+    test_function(copy_with_loop, "6) loop, more data, again", data2, DATA2_N, dest_loop);
 
-	// cleanup
-	delete_testbench();
-	return 0;
+    // cleanup
+    delete_testbench();
+    return 0;
 }

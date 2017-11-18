@@ -317,7 +317,7 @@ static void run_comparison(char *title, uint64_t *values, int values_n, int deno
 
 	// standard output
 	struct testbench_statistics stat = testbench_get_statistics();
-	print_testbench_statistics("Results", stat);
+	print_testbench_statistics("Results", &stat, NULL);
 
 	// actual comparison
 	printf("\nComparison:\n");

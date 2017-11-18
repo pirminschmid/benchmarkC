@@ -570,9 +570,9 @@ static struct testbench_statistics print_histogram_and_remove_outliers(const cha
             return *stat;
         }
 
-        double delta = TESTBENCH_OUTLIER_DETECTION_SD_MIN_SD * stat->sd;
-        double low = stat->mean - delta;
-        double high = stat->mean + delta;
+        double d = TESTBENCH_OUTLIER_DETECTION_SD_MIN_SD * stat->sd;
+        double low = stat->mean - d;
+        double high = stat->mean + d;
         for (int i = 0; i < n_values; i++) {
             uint64_t vi = values[i];
             double vd = (double)vi;

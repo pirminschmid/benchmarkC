@@ -80,7 +80,7 @@
 // and removal is always associated in this library with printing both histograms, before and after.
 //
 // There are currently 2 modes implemented for outlier detection:
-// - histogram: can remove any kind of value even within in the [min, max] range based on very low occurence
+// - histogram: can remove any kind of value even within the [min, max] range based on very low occurence
 // - standard deviation: removes outliers that are far from mean; there are much better statistical methods
 //   for outlier detection (e.g. Grubbs, Tukey or generalized ESD test) than SD used here. They are not
 //   implemented here.

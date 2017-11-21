@@ -151,7 +151,7 @@ static double get_percentile(uint64_t *sorted_values, size_t n_values, double pe
     if (r_frac < PERC_ATOL) {
         // integer number, use (r_floor - 1) as array index and return value
         size_t r_ind = (size_t)r_floor - 1;
-        assert(0 <= r_ind && r_ind < n_values);
+        assert(r_ind < n_values);
         result = (double)sorted_values[r_ind];
     }
     else {
@@ -159,7 +159,7 @@ static double get_percentile(uint64_t *sorted_values, size_t n_values, double pe
         // benefits and limitations -> see mentioned papers
         size_t r_ind = (size_t)r_floor - 1;
         size_t r_ind2 = r_ind + 1;
-        assert(0 <= r_ind && r_ind2 < n_values);
+        assert(r_ind2 < n_values);
         result = (1.0 - r_frac) * (double)sorted_values[r_ind];  // the closer to 0.0 the more weight
         result += r_frac * (double)sorted_values[r_ind2];        // the closer to 1.0 the more weight
     }

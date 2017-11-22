@@ -38,7 +38,7 @@
  *  Link: https://github.com/pirminschmid/CppToolbox
  *
  *
- *  v1.2 2015-11-25 / 2017-11-21 Pirmin Schmid, MIT License
+ *  v1.2 2015-11-25 / 2017-11-22 Pirmin Schmid, MIT License
  */
 
 #ifndef BENCHMARK_BENCHMARK_H_
@@ -190,7 +190,8 @@ void set_outlier_detection_mode(enum testbench_outlier_detection_mode mode);
 /**
  * storage space is reset to allow new measurment data
  * notes:
- * - baseline is NOT determined again
+ * - baseline is NOT determined again; but it is restored to
+ *   initial value in case a development_map_values() has been used
  * - options (denominator and outlier detection mode are kept)
  */
 void reset_testbench(void);
@@ -269,8 +270,8 @@ static inline void print_testbench_statistics(const char *title,
  * Notes:
  * - The receiving variable must be different than the provided stat argument.
  * - C like, the function can also be called without this receiving variable.
- * - Histogram: currently fixed size (width 50 == 100%, i.e. 2% / char)
- *   currently used: * for 2% and . for additional 1%
+ * - Histogram: currently fixed size (width 100 == 100%, i.e. 1 % / char)
+ *   currently used: * for 1 % and . for additional 0.5 %
  */
 struct testbench_statistics fprint_histogram(FILE *stream, const char *title,
                                              const struct testbench_statistics *stat,
@@ -310,7 +311,8 @@ bool development_load_raw_values(const uint64_t *values, size_t n_values);
 bool development_get_raw_values(uint64_t *values_buffer, size_t n_values_capacity, size_t *ret_n_values);
 
 /**
- * \param lambda
+ * \param   lambda
+ * \return  true in case of success; false otherwise
  *
  * Maps all values to different values. This can be used to run additional
  * transformations, e.g. needed for simple throughput calculations using
@@ -320,9 +322,16 @@ bool development_get_raw_values(uint64_t *values_buffer, size_t n_values_capacit
  * - input values may contain 0; protect against DIV/0
  * - scale lambda function to have again a wide range of values in the uint64_t space:
  *   values should not be compressed around 0 after lambda function.
+ * - baseline will be set to 0 with this operation
+ * - this mapping is *not* possible if denominator != 1
+ *   false is returned in that case
+ * - After this transformation, no additional measurements should be added
+ *   until reset_testbench() has been called
+ *   This is not checked / assured. It is assumed that the user knows
+ *   what she/he is doing when using this helper function.
  */
 typedef uint64_t (*testbench_lambda_function_t)(uint64_t value);
 
-void development_map_values(testbench_lambda_function_t lambda);
+bool development_map_values(testbench_lambda_function_t lambda);
 
 #endif // BENCHMARK_BENCHMARK_H_

@@ -4,7 +4,7 @@
  *
  * See header file for details.
  *
- * v1.2 2015-11-25 / 2017-11-21 Pirmin Schmid, MIT License
+ * v1.2 2015-11-25 / 2017-11-22 Pirmin Schmid, MIT License
  */
 
 #include "benchmark.h"
@@ -21,6 +21,7 @@
 //    some internal variables
 
 static uint64_t baseline_ = 0;
+static uint64_t baseline_backup_ = 0; // used to handle baseline reset by development_map_values()
 
 // raw data stored from measurement
 static uint64_t *data_ = NULL;
@@ -231,6 +232,7 @@ bool create_testbench(size_t capacity)
     print_testbench_statistics("baseline", &baseline_stat, NULL);
     print_histogram("baseline", &baseline_stat, NULL);
     baseline_ = baseline_stat.absMin;
+    baseline_backup_ = baseline_;
     printf("Benchmark library: %" PRIu64 " cycles will be used as baseline.\n", baseline_);
     count_ = 0;
     denominator_ = TESTBENCH_STD_DENOMINATOR;
@@ -268,6 +270,7 @@ void set_outlier_detection_mode(enum testbench_outlier_detection_mode mode)
 void reset_testbench(void)
 {
     count_ = 0;
+    baseline_ = baseline_backup_;
 }
 
 void delete_testbench(void)
@@ -631,7 +634,7 @@ static struct testbench_statistics fprint_histogram_and_remove_outliers(FILE *st
     }
 
     for (size_t i = 0; i < bins; i++) {
-        size_t j = (histogram[i] * 100) / n_values;
+        size_t j = (histogram[i] * 200) / n_values; // 200 is used to have 0.5 % resolution
         if (size == 1) {
             ret = fprintf(stream, "%4" PRIu64 " [%3zu]: ", i + min, histogram[i]);
             if (ret < 0) {
@@ -842,13 +845,21 @@ bool development_get_raw_values(uint64_t *values_buffer, size_t n_values_capacit
 }
 
 
-void development_map_values(testbench_lambda_function_t lambda)
+bool development_map_values(testbench_lambda_function_t lambda)
 {
     assert(lambda);
+
+    if (denominator_ != 1) {
+        return false;
+    }
+
+    baseline_ = 0;
 
     for (size_t i = 0; i < count_; i++) {
         data_[i] = lambda(data_[i]);
     }
+
+    return true;
 }
 
 

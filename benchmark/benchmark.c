@@ -5,7 +5,7 @@
  * See header file for details.
  *
  * v1.2 2015-11-25 / 2017-11-21 Pirmin Schmid, MIT License
-*/
+ */
 
 #include "benchmark.h"
 

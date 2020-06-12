@@ -1,6 +1,6 @@
 benchmarkC
 ==========
-[![Build Status](https://travis-ci.org/pirminschmid/benchmarkC.svg?branch=master)](https://travis-ci.org/pirminschmid/benchmarkC)
+[![Build Status](https://travis-ci.org/pirminschmid/benchmarkC.svg?branch=main)](https://travis-ci.org/pirminschmid/benchmarkC)
 
 A toolbox for (micro)benchmarking of C programs on x86_64.
 

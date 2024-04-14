@@ -1,6 +1,6 @@
 benchmarkC
 ==========
-![Build Status](https://github.com/pirminschmid/TestActions/actions/workflows/c-cpp.yml/badge.svg)
+![Build Status](https://github.com/pirminschmid/benchmarkC/actions/workflows/c-cpp.yml/badge.svg)
 
 A toolbox for (micro)benchmarking of C programs on x86_64.
 
